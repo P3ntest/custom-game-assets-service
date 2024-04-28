@@ -1,6 +1,7 @@
 import Elysia, { t } from "elysia";
 import { processFromBuffer, processFromUrl } from "./processImage";
 import { getImage, storeImage } from "./storage";
+import cors from "@elysiajs/cors";
 
 function verifyBearer(headers: Record<string, string | undefined>) {
   if (!process.env.API_AUTH_TOKEN) {
@@ -14,6 +15,7 @@ function verifyBearer(headers: Record<string, string | undefined>) {
 }
 
 new Elysia()
+  .use(cors())
   .post(
     "upload",
     async ({ body, headers }) => {

@@ -9,6 +9,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "@elysiajs/cors": "^1.0.2",
     "elysia": "^1.0.15",
     "jimp": "^0.22.12",
     "minio": "^7.1.4",
