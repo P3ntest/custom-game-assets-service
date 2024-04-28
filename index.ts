@@ -48,6 +48,9 @@ new Elysia()
     "asset/:id",
     async ({ params, set }) => {
       set.headers["Content-Type"] = "image/png";
+      if (params.id.endsWith(".png")) {
+        params.id = params.id.slice(0, -4);
+      }
       return await getImage(params.id);
     },
     {
