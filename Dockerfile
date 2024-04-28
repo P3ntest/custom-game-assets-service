@@ -1,4 +1,7 @@
-FROM oven/bun:1
+FROM oven/bun:1-debian
+
+# install pngquant
+RUN apt-get update && apt-get install -y pngquant
 
 WORKDIR /app
 
