@@ -1,13 +1,23 @@
 import Elysia, { t } from "elysia";
-import { cleanImage } from "./cleanImage";
-import { tinyPng } from "./compressImage";
 import { processFromBuffer, processFromUrl } from "./processImage";
 import { getImage, storeImage } from "./storage";
+
+function verifyBearer(headers: Record<string, string | undefined>) {
+  if (!process.env.API_AUTH_TOKEN) {
+    throw new Error("API_AUTH_TOKEN is not set");
+  }
+  console.log(headers.authorization);
+  console.log(`Bearer ${process.env.API_AUTH_TOKEN}`);
+  if (headers.authorization !== `Bearer ${process.env.API_AUTH_TOKEN}`) {
+    throw new Error("Unauthorized");
+  }
+}
 
 new Elysia()
   .post(
     "upload",
-    async ({ body }) => {
+    async ({ body, headers }) => {
+      verifyBearer(headers);
       const processed = await processFromBuffer(
         Buffer.from(await body.file.arrayBuffer())
       );
@@ -22,7 +32,8 @@ new Elysia()
   )
   .post(
     "from-url",
-    async ({ body }) => {
+    async ({ body, headers }) => {
+      verifyBearer(headers);
       const processed = await processFromUrl(body.url);
       const uploadedId = await storeImage(processed);
       return { id: uploadedId };
@@ -45,4 +56,6 @@ new Elysia()
       }),
     }
   )
-  .listen(3000);
+  .listen(3000, (server) => {
+    console.log(`Server listening on port ${server.port}`);
+  });

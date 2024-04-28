@@ -1,10 +1,12 @@
 import * as Minio from "minio";
 
-const client = new Minio.Client({
+const minioDetails = {
   endPoint: process.env.S3_ENDPOINT!,
   accessKey: process.env.S3_ACCESS_KEY!,
   secretKey: process.env.S3_SECRET_KEY!,
-});
+} as const;
+
+const client = new Minio.Client(minioDetails);
 const bucket = process.env.S3_BUCKET!;
 
 if (!(await client.bucketExists(bucket))) {
